@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Roblox LARP Sim</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .roblox-blue { background-color: #0074BD; }
+        .roblox-gray { background-color: #f2f4f5; }
+    </style>
+</head>
+<body class="roblox-gray font-sans">
+
+    <div class="roblox-blue h-12 flex items-center justify-between px-6 text-white font-bold">
+        <div>ROBLOX SIM</div>
+        <div class="flex gap-4 items-center">
+            <span id="robux-display" class="bg-black/20 px-2 py-1 rounded">0 R$</span>
+            <button onclick="getFreeRobux()" class="bg-green-500 px-3 py-1 rounded hover:bg-green-400 text-xs">GET ROBUX</button>
+        </div>
+    </div>
+
+    <div class="flex p-10 gap-10">
+        <div class="w-2/3 bg-white p-6 shadow-md border border-gray-300">
+            <h2 class="text-xl font-bold mb-4 border-b">Catalog / Shop</h2>
+            <div class="grid grid-cols-3 gap-4">
+                <div class="border p-4 text-center">
+                    <div class="h-24 bg-gray-100 mb-2 flex items-center justify-center">🎩</div>
+                    <p class="font-bold">Top Hat</p>
+                    <button onclick="buyItem('Top Hat', 500)" class="bg-blue-500 text-white px-4 py-1 mt-2 rounded">Buy (500)</button>
+                </div>
+                <div class="border p-4 text-center">
+                    <div class="h-24 bg-gray-100 mb-2 flex items-center justify-center">⚔️</div>
+                    <p class="font-bold">Sword</p>
+                    <button onclick="buyItem('Sword', 1200)" class="bg-blue-500 text-white px-4 py-1 mt-2 rounded">Buy (1200)</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="w-1/3 bg-white p-6 shadow-md border border-gray-300">
+            <h2 class="text-xl font-bold mb-4 border-b">My Stuff</h2>
+            <div class="mb-6">
+                <h3 class="text-gray-500 font-bold uppercase text-xs">Inventory</h3>
+                <ul id="inventory-list" class="mt-2 text-sm italic text-gray-700">None yet...</ul>
+            </div>
+            <div>
+                <h3 class="text-gray-500 font-bold uppercase text-xs">Transactions</h3>
+                <ul id="transaction-list" class="mt-2 text-xs text-green-600"></ul>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let robux = 0;
+        let inventory = [];
+
+        function updateUI() {
+            document.getElementById('robux-display').innerText = robux.toLocaleString() + " R$";
+            const invList = document.getElementById('inventory-list');
+            invList.innerHTML = inventory.length ? inventory.join(', ') : "None yet...";
+        }
+
+        function getFreeRobux() {
+            robux += 100000;
+            updateUI();
+        }
+
+        function buyItem(name, price) {
+            if (robux >= price) {
+                robux -= price;
+                inventory.push(name);
+                
+                // Add to transaction list
+                const list = document.getElementById('transaction-list');
+                const entry = document.createElement('li');
+                entry.innerText = `Bought ${name} for ${price} R$`;
+                list.prepend(entry);
+                
+                updateUI();
+            } else {
+                alert("You need more Robux!");
+            }
+        }
+    </script>
+</body>
+</html>
