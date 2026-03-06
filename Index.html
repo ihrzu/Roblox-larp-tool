@@ -1,83 +1,119 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Roblox LARP Sim</title>
+    <meta charset="UTF-8">
+    <title>Roblox LARP - Archive 2026</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        .roblox-blue { background-color: #0074BD; }
-        .roblox-gray { background-color: #f2f4f5; }
+        .rbx-header { background-color: #0074BD; }
+        .rbx-bg { background-color: #f2f4f5; }
+        .rbx-btn-green { background-color: #00843D; }
+        .rbx-btn-blue { background-color: #00A2FF; }
     </style>
 </head>
-<body class="roblox-gray font-sans">
+<body class="rbx-bg font-sans min-h-screen">
 
-    <div class="roblox-blue h-12 flex items-center justify-between px-6 text-white font-bold">
-        <div>ROBLOX SIM</div>
-        <div class="flex gap-4 items-center">
-            <span id="robux-display" class="bg-black/20 px-2 py-1 rounded">0 R$</span>
-            <button onclick="getFreeRobux()" class="bg-green-500 px-3 py-1 rounded hover:bg-green-400 text-xs">GET ROBUX</button>
+    <nav class="rbx-header h-12 flex items-center justify-between px-10 text-white shadow-md">
+        <div class="flex gap-6 font-bold text-sm uppercase">
+            <span class="cursor-pointer hover:underline">Games</span>
+            <span class="cursor-pointer hover:underline">Catalog</span>
+            <span class="underline">Profile</span>
         </div>
-    </div>
+        <div class="flex items-center gap-4">
+            <div id="balance" class="font-bold text-lg text-green-300">0 R$</div>
+            <button onclick="addMoney()" class="rbx-btn-green px-3 py-1 rounded text-xs font-bold hover:brightness-110">GET ROBUX</button>
+        </div>
+    </nav>
 
-    <div class="flex p-10 gap-10">
-        <div class="w-2/3 bg-white p-6 shadow-md border border-gray-300">
-            <h2 class="text-xl font-bold mb-4 border-b">Catalog / Shop</h2>
-            <div class="grid grid-cols-3 gap-4">
-                <div class="border p-4 text-center">
-                    <div class="h-24 bg-gray-100 mb-2 flex items-center justify-center">🎩</div>
-                    <p class="font-bold">Top Hat</p>
-                    <button onclick="buyItem('Top Hat', 500)" class="bg-blue-500 text-white px-4 py-1 mt-2 rounded">Buy (500)</button>
+    <div class="max-w-6xl mx-auto mt-8 grid grid-cols-12 gap-6 p-4">
+        
+        <div class="col-span-4 bg-white p-6 rounded shadow border border-gray-300 text-center">
+            <h2 class="text-xl font-bold mb-4 text-left border-b pb-2">My Avatar</h2>
+            <div class="bg-gray-200 w-48 h-48 mx-auto rounded-lg mb-4 flex items-center justify-center overflow-hidden border-2 border-gray-300">
+                <img id="avatar-img" src="https://tr.rbxcdn.com/30DAY-Avatar-Png" alt="Avatar" class="w-full h-full object-cover">
+            </div>
+            <div class="grid grid-cols-2 gap-2">
+                <button onclick="changeAvatar('classic')" class="bg-gray-100 border p-2 text-xs hover:bg-gray-200">Classic Noob</button>
+                <button onclick="changeAvatar('knight')" class="bg-gray-100 border p-2 text-xs hover:bg-gray-200">Knight</button>
+                <button onclick="changeAvatar('ninja')" class="bg-gray-100 border p-2 text-xs hover:bg-gray-200">Ninja</button>
+                <button onclick="changeAvatar('rich')" class="bg-gray-100 border p-2 text-xs hover:bg-gray-200">Billionaire</button>
+            </div>
+        </div>
+
+        <div class="col-span-5 bg-white p-6 rounded shadow border border-gray-300">
+            <h2 class="text-xl font-bold mb-4 border-b pb-2">Catalog Items</h2>
+            <div class="grid grid-cols-2 gap-4">
+                <div class="border p-4 rounded hover:shadow-lg transition">
+                    <div class="text-4xl mb-2">🔥</div>
+                    <p class="font-bold">Fire Cape</p>
+                    <p class="text-green-600 text-sm">5,000 R$</p>
+                    <button onclick="buyItem('Fire Cape', 5000)" class="rbx-btn-blue text-white w-full py-1 mt-2 rounded text-sm font-bold">Buy</button>
                 </div>
-                <div class="border p-4 text-center">
-                    <div class="h-24 bg-gray-100 mb-2 flex items-center justify-center">⚔️</div>
-                    <p class="font-bold">Sword</p>
-                    <button onclick="buyItem('Sword', 1200)" class="bg-blue-500 text-white px-4 py-1 mt-2 rounded">Buy (1200)</button>
+                <div class="border p-4 rounded hover:shadow-lg transition">
+                    <div class="text-4xl mb-2">💎</div>
+                    <p class="font-bold">Ice Crown</p>
+                    <p class="text-green-600 text-sm">12,000 R$</p>
+                    <button onclick="buyItem('Ice Crown', 12000)" class="rbx-btn-blue text-white w-full py-1 mt-2 rounded text-sm font-bold">Buy</button>
                 </div>
             </div>
         </div>
 
-        <div class="w-1/3 bg-white p-6 shadow-md border border-gray-300">
-            <h2 class="text-xl font-bold mb-4 border-b">My Stuff</h2>
-            <div class="mb-6">
-                <h3 class="text-gray-500 font-bold uppercase text-xs">Inventory</h3>
-                <ul id="inventory-list" class="mt-2 text-sm italic text-gray-700">None yet...</ul>
+        <div class="col-span-3 space-y-6">
+            <div class="bg-white p-4 rounded shadow border border-gray-300">
+                <h3 class="font-bold text-gray-500 uppercase text-xs mb-2">My Inventory</h3>
+                <div id="inv-box" class="text-sm text-gray-700 space-y-1 italic">Empty...</div>
             </div>
-            <div>
-                <h3 class="text-gray-500 font-bold uppercase text-xs">Transactions</h3>
-                <ul id="transaction-list" class="mt-2 text-xs text-green-600"></ul>
+            <div class="bg-white p-4 rounded shadow border border-gray-300">
+                <h3 class="font-bold text-gray-500 uppercase text-xs mb-2">Transactions</h3>
+                <div id="trans-box" class="text-[10px] text-gray-500 space-y-1 h-40 overflow-y-auto">
+                    </div>
             </div>
         </div>
+
     </div>
 
     <script>
-        let robux = 0;
-        let inventory = [];
+        let balance = 0;
+        let myItems = [];
 
-        function updateUI() {
-            document.getElementById('robux-display').innerText = robux.toLocaleString() + " R$";
-            const invList = document.getElementById('inventory-list');
-            invList.innerHTML = inventory.length ? inventory.join(', ') : "None yet...";
-        }
-
-        function getFreeRobux() {
-            robux += 100000;
-            updateUI();
+        function addMoney() {
+            balance += 50000;
+            updateDisplay();
+            logTransaction("SYSTEM", "+50,000 R$ (Archive Grant)");
         }
 
         function buyItem(name, price) {
-            if (robux >= price) {
-                robux -= price;
-                inventory.push(name);
-                
-                // Add to transaction list
-                const list = document.getElementById('transaction-list');
-                const entry = document.createElement('li');
-                entry.innerText = `Bought ${name} for ${price} R$`;
-                list.prepend(entry);
-                
-                updateUI();
+            if (balance >= price) {
+                balance -= price;
+                myItems.push(name);
+                updateDisplay();
+                logTransaction("PURCHASE", `-${price} R$ for ${name}`);
             } else {
-                alert("You need more Robux!");
+                alert("The Archive requires more Robux for this relic.");
             }
+        }
+
+        function logTransaction(type, msg) {
+            const box = document.getElementById('trans-box');
+            const entry = document.createElement('div');
+            entry.className = "border-b border-gray-100 py-1";
+            entry.innerHTML = `<strong>[${type}]</strong> ${msg}`;
+            box.prepend(entry);
+        }
+
+        function updateDisplay() {
+            document.getElementById('balance').innerText = balance.toLocaleString() + " R$";
+            const invBox = document.getElementById('inv-box');
+            invBox.innerHTML = myItems.length ? myItems.join("<br>") : "Empty...";
+        }
+
+        function changeAvatar(type) {
+            const img = document.getElementById('avatar-img');
+            // Using different character IDs for variety
+            if(type === 'classic') img.src = "https://tr.rbxcdn.com/30DAY-Avatar-Png"; 
+            if(type === 'knight') img.src = "https://tr.rbxcdn.com/6c0599a09890656a85f8f83060c29f64/150/150/Avatar/Png";
+            if(type === 'ninja') img.src = "https://tr.rbxcdn.com/f83e0ec08d13a6964952da8d50b73c41/150/150/Avatar/Png";
+            if(type === 'rich') img.src = "https://tr.rbxcdn.com/26798e3b1c5520a23223011409f5e3e7/150/150/Avatar/Png";
         }
     </script>
 </body>
