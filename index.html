@@ -3,85 +3,136 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ROBLOX Archive Simulator</title>
+    <title>Home - ROBLOX</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        .rbx-blue { background-color: #0074BD; }
-        .rbx-bg { background-color: #f2f4f5; }
-        .rbx-btn-green { background-color: #00843D; }
-        .rbx-btn-blue { background-color: #00A2FF; }
+        :root { --rbx-blue: #0074BD; --rbx-bg: #e3e3e3; --rbx-nav: #00558c; }
+        body { background-color: var(--rbx-bg); font-family: 'Source Sans Pro', Arial, sans-serif; }
+        .nav-top { background-color: var(--rbx-blue); height: 40px; }
+        .sidebar { background-color: #ffffff; width: 180px; min-height: calc(100vh - 40px); border-right: 1px solid #ccc; }
+        .btn-robux { background: linear-gradient(#00a2ff, #0084d6); border: 1px solid #005a91; color: white; }
+        .item-card { background: white; border: 1px solid #d6d6d6; transition: transform 0.1s; }
+        .item-card:hover { transform: scale(1.02); border-color: #00a2ff; }
     </style>
 </head>
-<body class="rbx-bg font-sans min-h-screen">
+<body class="overflow-x-hidden">
 
-    <nav class="rbx-blue h-12 flex items-center justify-between px-6 text-white shadow-md sticky top-0 z-50">
-        <div class="flex gap-4 font-bold text-sm">
-            <span>Games</span>
-            <span>Catalog</span>
-            <span class="underline">Avatar LARP</span>
+    <nav class="nav-top flex items-center justify-between px-4 text-white font-bold text-sm shadow-md sticky top-0 z-50">
+        <div class="flex items-center gap-6">
+            <div class="text-xl tracking-tighter italic">ROBLOX</div>
+            <div class="hidden md:flex gap-4 uppercase text-[11px]">
+                <span class="cursor-pointer hover:bg-[#00558c] px-2 py-2">Games</span>
+                <span class="cursor-pointer hover:bg-[#00558c] px-2 py-2 border-b-2 border-white">Catalog</span>
+                <span class="cursor-pointer hover:bg-[#00558c] px-2 py-2">Develop</span>
+                <span class="cursor-pointer hover:bg-[#00558c] px-2 py-2">Robux</span>
+            </div>
         </div>
         <div class="flex items-center gap-4">
-            <div id="balance" class="font-bold text-green-300">0 R$</div>
-            <button onclick="addRobux()" class="rbx-btn-green px-3 py-1 rounded text-xs font-bold uppercase">Get Robux</button>
+            <div class="flex items-center gap-1 bg-black/20 px-2 py-0.5 rounded">
+                <span id="balance" class="text-green-400">0</span>
+                <span class="text-[10px] text-gray-300">R$</span>
+            </div>
+            <button onclick="injectFunds()" class="bg-green-600 px-2 py-0.5 rounded text-[10px] hover:bg-green-500">BUY ROBUX</button>
+            <div class="w-7 h-7 bg-white rounded-full border border-blue-900 overflow-hidden">
+                <img id="nav-avatar" src="https://tr.rbxcdn.com/30DAY-Avatar-Png" class="w-full h-full object-cover">
+            </div>
         </div>
     </nav>
 
-    <div class="max-w-5xl mx-auto mt-6 grid grid-cols-1 md:grid-cols-3 gap-6 p-4">
-        
-        <div class="bg-white p-6 rounded shadow border border-gray-300">
-            <h2 class="font-bold border-b mb-4">My Avatar</h2>
-            <div class="bg-gray-100 w-full aspect-square mb-4 border border-gray-300 flex items-center justify-center overflow-hidden">
-                <img id="avatar-display" src="https://tr.rbxcdn.com/30DAY-Avatar-Png" class="w-full h-full object-contain">
-            </div>
-            <div class="grid grid-cols-2 gap-2">
-                <button onclick="setAvatar('classic')" class="bg-gray-50 border text-xs p-2 hover:bg-gray-100">Classic</button>
-                <button onclick="setAvatar('knight')" class="bg-gray-50 border text-xs p-2 hover:bg-gray-100">Knight</button>
-                <button onclick="setAvatar('ninja')" class="bg-gray-50 border text-xs p-2 hover:bg-gray-100">Ninja</button>
-                <button onclick="setAvatar('rich')" class="bg-gray-50 border text-xs p-2 hover:bg-gray-100">Rich</button>
-            </div>
-        </div>
+    <div class="flex">
+        <aside class="sidebar hidden md:flex flex-col p-4 gap-3 text-sm text-gray-600">
+            <div class="font-bold text-black flex items-center gap-2 cursor-pointer hover:text-blue-600">🏠 Home</div>
+            <div class="flex items-center gap-2 cursor-pointer hover:text-blue-600">👤 Profile</div>
+            <div class="flex items-center gap-2 cursor-pointer hover:text-blue-600">💬 Messages</div>
+            <div class="flex items-center gap-2 cursor-pointer hover:text-blue-600">👬 Friends</div>
+            <div class="flex items-center gap-2 cursor-pointer hover:text-blue-600">📦 Inventory</div>
+            <hr>
+            <div class="text-[10px] font-bold text-gray-400 uppercase">My Groups</div>
+            <div class="text-[11px] text-blue-500 italic">Order of Saffron Veil</div>
+        </aside>
 
-        <div class="bg-white p-6 rounded shadow border border-gray-300">
-            <h2 class="font-bold border-b mb-4">Shop Items</h2>
-            <div class="space-y-4">
-                <div class="flex justify-between items-center p-2 border rounded">
-                    <span>🔥 Fire Cape</span>
-                    <button onclick="buy('Fire Cape', 5000)" class="rbx-btn-blue text-white px-3 py-1 rounded text-xs">5,000 R$</button>
+        <main class="flex-1 p-6">
+            <div class="max-w-5xl mx-auto">
+                
+                <div class="bg-white p-6 rounded shadow-sm border border-gray-300 flex flex-col md:flex-row gap-8 mb-6">
+                    <div class="w-48 h-48 bg-gray-50 border border-gray-200 rounded flex items-center justify-center relative group">
+                        <img id="main-avatar" src="https://tr.rbxcdn.com/30DAY-Avatar-Png" class="w-full h-full object-contain">
+                        <div class="absolute bottom-0 w-full bg-black/50 text-white text-[10px] text-center opacity-0 group-hover:opacity-100 transition">Current Outfit</div>
+                    </div>
+                    <div class="flex-1">
+                        <h1 class="text-3xl font-bold mb-1">Lyra_Archivist <span class="text-xs text-green-500 font-normal">● Online</span></h1>
+                        <p class="text-gray-400 text-sm italic mb-4">"Unearthing the raw, unfiltered truths of the Old Net."</p>
+                        <div class="flex gap-10 border-t border-b py-4">
+                            <div class="text-center"><p class="font-bold">1.2M</p><p class="text-[10px] uppercase text-gray-400">Friends</p></div>
+                            <div class="text-center"><p class="font-bold">850k</p><p class="text-[10px] uppercase text-gray-400">Followers</p></div>
+                            <div class="text-center"><p class="font-bold">0</p><p class="text-[10px] uppercase text-gray-400">Following</p></div>
+                        </div>
+                    </div>
                 </div>
-                <div class="flex justify-between items-center p-2 border rounded">
-                    <span>💎 Ice Crown</span>
-                    <button onclick="buy('Ice Crown', 15000)" class="rbx-btn-blue text-white px-3 py-1 rounded text-xs">15,000 R$</button>
+
+                <h2 class="text-xl font-bold mb-4">Featured Catalog</h2>
+                <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+                    <div class="item-card p-3 rounded shadow-sm">
+                        <div class="aspect-square bg-gray-100 rounded mb-2 flex items-center justify-center text-4xl">🎩</div>
+                        <p class="font-bold text-sm truncate">Clockwork's Shades</p>
+                        <p class="text-green-600 font-bold text-xs mb-2">15,000 R$</p>
+                        <button onclick="buy('Clockwork Shades', 15000, 'rich')" class="w-full btn-robux text-white py-1 rounded text-xs font-bold uppercase">Buy</button>
+                    </div>
+                    <div class="item-card p-3 rounded shadow-sm">
+                        <div class="aspect-square bg-gray-100 rounded mb-2 flex items-center justify-center text-4xl">⚔️</div>
+                        <p class="font-bold text-sm truncate">Silver Ninja Sword</p>
+                        <p class="text-green-600 font-bold text-xs mb-2">5,000 R$</p>
+                        <button onclick="buy('Ninja Sword', 5000, 'ninja')" class="w-full btn-robux text-white py-1 rounded text-xs font-bold uppercase">Buy</button>
+                    </div>
+                    <div class="item-card p-3 rounded shadow-sm">
+                        <div class="aspect-square bg-gray-100 rounded mb-2 flex items-center justify-center text-4xl">🛡️</div>
+                        <p class="font-bold text-sm truncate">Knight of Retribution</p>
+                        <p class="text-green-600 font-bold text-xs mb-2">8,500 R$</p>
+                        <button onclick="buy('Knight Armor', 8500, 'knight')" class="w-full btn-robux text-white py-1 rounded text-xs font-bold uppercase">Buy</button>
+                    </div>
+                    <div class="item-card p-3 rounded shadow-sm">
+                        <div class="aspect-square bg-gray-100 rounded mb-2 flex items-center justify-center text-4xl">🏗️</div>
+                        <p class="font-bold text-sm truncate">Builder's Club Hat</p>
+                        <p class="text-green-600 font-bold text-xs mb-2">0 R$</p>
+                        <button onclick="buy('BC Hat', 0, 'classic')" class="w-full btn-robux text-white py-1 rounded text-xs font-bold uppercase">Get</button>
+                    </div>
                 </div>
-            </div>
-        </div>
 
-        <div class="bg-white p-6 rounded shadow border border-gray-300">
-            <h2 class="font-bold border-b mb-4 text-gray-500 text-sm">Inventory & Logs</h2>
-            <div id="inv" class="text-xs mb-4 text-blue-600 font-bold">Items: None</div>
-            <div id="logs" class="text-[10px] text-gray-400 h-48 overflow-y-auto space-y-1">
-                <div>[SYSTEM] Awaiting deployment...</div>
-            </div>
-        </div>
+                <div class="mt-8 bg-white p-4 border border-gray-300 shadow-sm rounded">
+                    <h3 class="font-bold text-xs text-gray-400 uppercase mb-2">Archival Logs (Transactions)</h3>
+                    <div id="logs" class="text-[10px] font-mono text-gray-500 h-24 overflow-y-auto space-y-1">
+                        <div>[SYSTEM] Connection Established to Saffron Veil Server...</div>
+                    </div>
+                </div>
 
+            </div>
+        </main>
     </div>
 
     <script>
-        let r$ = 0;
-        let items = [];
+        let robux = 0;
+        let inventory = [];
 
-        function addRobux() {
-            r$ += 100000;
+        function injectFunds() {
+            robux += 50000;
             update();
-            log("INJECTED +100,000 R$");
+            log("FUNDS INJECTED: +50,000 R$");
         }
 
-        function buy(name, cost) {
-            if (r$ >= cost) {
-                r$ -= cost;
-                items.push(name);
+        function buy(name, price, avatarType) {
+            if (robux >= price) {
+                robux -= price;
+                inventory.push(name);
                 update();
-                log(`PURCHASED: ${name} (-${cost})`);
-            } else { alert("Insufficient Robux!"); }
+                log("PURCHASE SUCCESS: " + name + " for " + price + " R$");
+                changeAvatar(avatarType);
+            } else {
+                alert("ACCESS DENIED: Insufficient Data-Credits!");
+            }
+        }
+
+        function update() {
+            document.getElementById('balance').innerText = robux.toLocaleString();
         }
 
         function log(msg) {
@@ -89,21 +140,18 @@
             l.innerHTML = `<div>[${new Date().toLocaleTimeString()}] ${msg}</div>` + l.innerHTML;
         }
 
-        function update() {
-            document.getElementById('balance').innerText = r$.toLocaleString() + " R$";
-            document.getElementById('inv').innerText = "Items: " + (items.length ? items.join(", ") : "None");
-        }
-
-        function setAvatar(type) {
-            const img = document.getElementById('avatar-display');
-            const paths = {
+        function changeAvatar(type) {
+            const main = document.getElementById('main-avatar');
+            const nav = document.getElementById('nav-avatar');
+            const models = {
                 classic: "https://tr.rbxcdn.com/30DAY-Avatar-Png",
                 knight: "https://tr.rbxcdn.com/6c0599a09890656a85f8f83060c29f64/150/150/Avatar/Png",
                 ninja: "https://tr.rbxcdn.com/f83e0ec08d13a6964952da8d50b73c41/150/150/Avatar/Png",
                 rich: "https://tr.rbxcdn.com/26798e3b1c5520a23223011409f5e3e7/150/150/Avatar/Png"
             };
-            img.src = paths[type];
-            log(`AVATAR CHANGED TO: ${type.toUpperCase()}`);
+            main.src = models[type];
+            nav.src = models[type];
+            log("AVATAR RECONSTRUCTED: " + type.toUpperCase());
         }
     </script>
 </body>
