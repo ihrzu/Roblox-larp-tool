@@ -1,0 +1,30 @@
+/* The classic Roblox Grey & Blue Palette */
+.roblox-header {
+  background-color: #0074BD; /* The iconic blue */
+  height: 40px;
+  display: flex;
+  align-items: center;
+  padding: 0 20px;
+}
+
+.roblox-sidebar {
+  background-color: #EEEEEE;
+  width: 180px;
+  min-height: 100vh;
+  border-right: 1px solid #CCC;
+}
+
+.item-card {
+  background: white;
+  border: 1px solid #D6D6D6;
+  width: 150px;
+  height: 200px;
+  text-align: center;
+  margin: 10px;
+  font-family: 'Source Sans Pro', Arial, sans-serif;
+}
+
+.robux-text {
+  color: #008000;
+  font-weight: bold;
+}
