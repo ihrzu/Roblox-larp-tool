@@ -3,155 +3,144 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Home - ROBLOX</title>
+    <title>Marketplace - Roblox</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        :root { --rbx-blue: #0074BD; --rbx-bg: #e3e3e3; --rbx-nav: #00558c; }
-        body { background-color: var(--rbx-bg); font-family: 'Source Sans Pro', Arial, sans-serif; }
-        .nav-top { background-color: var(--rbx-blue); height: 40px; }
-        .sidebar { background-color: #ffffff; width: 180px; min-height: calc(100vh - 40px); border-right: 1px solid #ccc; }
-        .btn-robux { background: linear-gradient(#00a2ff, #0084d6); border: 1px solid #005a91; color: white; }
-        .item-card { background: white; border: 1px solid #d6d6d6; transition: transform 0.1s; }
-        .item-card:hover { transform: scale(1.02); border-color: #00a2ff; }
+        body { background-color: #000000; color: #ffffff; font-family: 'HCo Gotham SSm', 'Helvetica Neue', Helvetica, Arial, Lucida Grande, sans-serif; }
+        .rbx-nav { background-color: #111214; border-bottom: 1px solid #393b3d; }
+        .rbx-sidebar { background-color: #111214; width: 220px; transition: transform 0.3s; }
+        .market-card { background-color: #232527; border-radius: 8px; transition: background-color 0.2s; cursor: pointer; }
+        .market-card:hover { background-color: #393b3d; }
+        .rbx-btn-blue { background-color: #0084ff; font-weight: 600; border-radius: 8px; }
+        .rbx-btn-blue:hover { background-color: #319aff; }
+        .rbx-dark-input { background-color: #393b3d; border: 1px solid #555; }
     </style>
 </head>
-<body class="overflow-x-hidden">
+<body class="flex flex-col h-screen overflow-hidden">
 
-    <nav class="nav-top flex items-center justify-between px-4 text-white font-bold text-sm shadow-md sticky top-0 z-50">
-        <div class="flex items-center gap-6">
-            <div class="text-xl tracking-tighter italic">ROBLOX</div>
-            <div class="hidden md:flex gap-4 uppercase text-[11px]">
-                <span class="cursor-pointer hover:bg-[#00558c] px-2 py-2">Games</span>
-                <span class="cursor-pointer hover:bg-[#00558c] px-2 py-2 border-b-2 border-white">Catalog</span>
-                <span class="cursor-pointer hover:bg-[#00558c] px-2 py-2">Develop</span>
-                <span class="cursor-pointer hover:bg-[#00558c] px-2 py-2">Robux</span>
+    <nav class="rbx-nav h-14 flex items-center justify-between px-4 z-50">
+        <div class="flex items-center gap-4">
+            <button onclick="toggleSidebar()" class="text-2xl p-2">☰</button>
+            <div class="font-black text-2xl tracking-tighter">ROBLOX</div>
+            <div class="hidden lg:flex gap-6 text-sm font-semibold text-gray-400 ml-4">
+                <span class="hover:text-white cursor-pointer">Charts</span>
+                <span class="text-white border-b-2 border-white pb-4 cursor-pointer">Marketplace</span>
+                <span class="hover:text-white cursor-pointer">Create</span>
+                <span class="hover:text-white cursor-pointer">Robux</span>
             </div>
         </div>
+        
         <div class="flex items-center gap-4">
-            <div class="flex items-center gap-1 bg-black/20 px-2 py-0.5 rounded">
-                <span id="balance" class="text-green-400">0</span>
-                <span class="text-[10px] text-gray-300">R$</span>
+            <div class="relative">
+                <input type="text" placeholder="Search" class="rbx-dark-input rounded-md px-3 py-1 text-sm w-48 md:w-64">
             </div>
-            <button onclick="injectFunds()" class="bg-green-600 px-2 py-0.5 rounded text-[10px] hover:bg-green-500">BUY ROBUX</button>
-            <div class="w-7 h-7 bg-white rounded-full border border-blue-900 overflow-hidden">
-                <img id="nav-avatar" src="https://tr.rbxcdn.com/30DAY-Avatar-Png" class="w-full h-full object-cover">
+            <div class="flex items-center gap-1 font-bold">
+                <span class="text-xs">⟡</span>
+                <span id="robux-balance">6,142</span>
+            </div>
+            <div class="w-8 h-8 rounded-full bg-gray-600 overflow-hidden border border-gray-500">
+                <img id="pfp" src="https://tr.rbxcdn.com/30DAY-Avatar-Png" class="w-full h-full object-cover">
             </div>
         </div>
     </nav>
 
-    <div class="flex">
-        <aside class="sidebar hidden md:flex flex-col p-4 gap-3 text-sm text-gray-600">
-            <div class="font-bold text-black flex items-center gap-2 cursor-pointer hover:text-blue-600">🏠 Home</div>
-            <div class="flex items-center gap-2 cursor-pointer hover:text-blue-600">👤 Profile</div>
-            <div class="flex items-center gap-2 cursor-pointer hover:text-blue-600">💬 Messages</div>
-            <div class="flex items-center gap-2 cursor-pointer hover:text-blue-600">👬 Friends</div>
-            <div class="flex items-center gap-2 cursor-pointer hover:text-blue-600">📦 Inventory</div>
-            <hr>
-            <div class="text-[10px] font-bold text-gray-400 uppercase">My Groups</div>
-            <div class="text-[11px] text-blue-500 italic">Order of Saffron Veil</div>
+    <div class="flex flex-1 overflow-hidden">
+        <aside id="sidebar" class="rbx-sidebar p-4 space-y-4 text-sm font-semibold text-gray-300">
+            <div class="flex items-center gap-3 p-2 hover:bg-white/10 rounded cursor-pointer">🏠 Home</div>
+            <div class="flex items-center gap-3 p-2 hover:bg-white/10 rounded cursor-pointer">👤 Profile</div>
+            <div class="flex items-center gap-3 p-2 hover:bg-white/10 rounded cursor-pointer">📩 Messages <span class="bg-red-600 text-[10px] px-1 rounded-full">273</span></div>
+            <div class="flex items-center gap-3 p-2 hover:bg-white/10 rounded cursor-pointer">🛒 Marketplace</div>
+            <div class="flex items-center gap-3 p-2 hover:bg-white/10 rounded cursor-pointer">📦 Inventory</div>
+            <div onclick="showPage('transactions')" class="flex items-center gap-3 p-2 hover:bg-white/10 rounded cursor-pointer">🧾 Transactions</div>
+            <hr class="border-gray-800">
+            <button onclick="showPage('buy-robux')" class="w-full rbx-btn-blue py-2 mt-2 text-white text-xs uppercase">Get Robux</button>
         </aside>
 
-        <main class="flex-1 p-6">
-            <div class="max-w-5xl mx-auto">
+        <main id="main-content" class="flex-1 overflow-y-auto p-6 bg-[#111214]">
+            
+            <div id="view-market">
+                <div class="flex justify-between items-center mb-6">
+                    <h1 class="text-3xl font-bold">Marketplace</h1>
+                    <button class="rbx-btn-blue px-4 py-2 text-sm">Buy Robux</button>
+                </div>
                 
-                <div class="bg-white p-6 rounded shadow-sm border border-gray-300 flex flex-col md:flex-row gap-8 mb-6">
-                    <div class="w-48 h-48 bg-gray-50 border border-gray-200 rounded flex items-center justify-center relative group">
-                        <img id="main-avatar" src="https://tr.rbxcdn.com/30DAY-Avatar-Png" class="w-full h-full object-contain">
-                        <div class="absolute bottom-0 w-full bg-black/50 text-white text-[10px] text-center opacity-0 group-hover:opacity-100 transition">Current Outfit</div>
+                <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+                    <div class="market-card p-3" onclick="buyItem('Korblox Deathspeaker', 17000)">
+                        <div class="aspect-square bg-[#191b1d] rounded mb-2 flex items-center justify-center text-5xl">💀</div>
+                        <p class="text-xs font-bold truncate">Korblox Deathspeaker</p>
+                        <p class="text-[10px] text-gray-400">By Roblox</p>
+                        <p class="text-xs font-bold mt-1">⟡ 17,000</p>
                     </div>
-                    <div class="flex-1">
-                        <h1 class="text-3xl font-bold mb-1">Lyra_Archivist <span class="text-xs text-green-500 font-normal">● Online</span></h1>
-                        <p class="text-gray-400 text-sm italic mb-4">"Unearthing the raw, unfiltered truths of the Old Net."</p>
-                        <div class="flex gap-10 border-t border-b py-4">
-                            <div class="text-center"><p class="font-bold">1.2M</p><p class="text-[10px] uppercase text-gray-400">Friends</p></div>
-                            <div class="text-center"><p class="font-bold">850k</p><p class="text-[10px] uppercase text-gray-400">Followers</p></div>
-                            <div class="text-center"><p class="font-bold">0</p><p class="text-[10px] uppercase text-gray-400">Following</p></div>
-                        </div>
+                    <div class="market-card p-3" onclick="buyItem('Void Mask', 90)">
+                        <div class="aspect-square bg-[#191b1d] rounded mb-2 flex items-center justify-center text-5xl">🌑</div>
+                        <p class="text-xs font-bold truncate">Void Mask</p>
+                        <p class="text-[10px] text-gray-400">By Maplestick</p>
+                        <p class="text-xs font-bold mt-1">⟡ 90</p>
                     </div>
-                </div>
-
-                <h2 class="text-xl font-bold mb-4">Featured Catalog</h2>
-                <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
-                    <div class="item-card p-3 rounded shadow-sm">
-                        <div class="aspect-square bg-gray-100 rounded mb-2 flex items-center justify-center text-4xl">🎩</div>
-                        <p class="font-bold text-sm truncate">Clockwork's Shades</p>
-                        <p class="text-green-600 font-bold text-xs mb-2">15,000 R$</p>
-                        <button onclick="buy('Clockwork Shades', 15000, 'rich')" class="w-full btn-robux text-white py-1 rounded text-xs font-bold uppercase">Buy</button>
-                    </div>
-                    <div class="item-card p-3 rounded shadow-sm">
-                        <div class="aspect-square bg-gray-100 rounded mb-2 flex items-center justify-center text-4xl">⚔️</div>
-                        <p class="font-bold text-sm truncate">Silver Ninja Sword</p>
-                        <p class="text-green-600 font-bold text-xs mb-2">5,000 R$</p>
-                        <button onclick="buy('Ninja Sword', 5000, 'ninja')" class="w-full btn-robux text-white py-1 rounded text-xs font-bold uppercase">Buy</button>
-                    </div>
-                    <div class="item-card p-3 rounded shadow-sm">
-                        <div class="aspect-square bg-gray-100 rounded mb-2 flex items-center justify-center text-4xl">🛡️</div>
-                        <p class="font-bold text-sm truncate">Knight of Retribution</p>
-                        <p class="text-green-600 font-bold text-xs mb-2">8,500 R$</p>
-                        <button onclick="buy('Knight Armor', 8500, 'knight')" class="w-full btn-robux text-white py-1 rounded text-xs font-bold uppercase">Buy</button>
-                    </div>
-                    <div class="item-card p-3 rounded shadow-sm">
-                        <div class="aspect-square bg-gray-100 rounded mb-2 flex items-center justify-center text-4xl">🏗️</div>
-                        <p class="font-bold text-sm truncate">Builder's Club Hat</p>
-                        <p class="text-green-600 font-bold text-xs mb-2">0 R$</p>
-                        <button onclick="buy('BC Hat', 0, 'classic')" class="w-full btn-robux text-white py-1 rounded text-xs font-bold uppercase">Get</button>
+                    <div class="market-card p-3" onclick="buyItem('Flaming Mohawk', 495)">
+                        <div class="aspect-square bg-[#191b1d] rounded mb-2 flex items-center justify-center text-5xl">🔥</div>
+                        <p class="text-xs font-bold truncate">Flaming Mohawk</p>
+                        <p class="text-[10px] text-gray-400">By Roblox</p>
+                        <p class="text-xs font-bold mt-1">⟡ 495</p>
                     </div>
                 </div>
-
-                <div class="mt-8 bg-white p-4 border border-gray-300 shadow-sm rounded">
-                    <h3 class="font-bold text-xs text-gray-400 uppercase mb-2">Archival Logs (Transactions)</h3>
-                    <div id="logs" class="text-[10px] font-mono text-gray-500 h-24 overflow-y-auto space-y-1">
-                        <div>[SYSTEM] Connection Established to Saffron Veil Server...</div>
-                    </div>
-                </div>
-
             </div>
+
+            <div id="view-transactions" class="hidden max-w-4xl mx-auto">
+                <h1 class="text-3xl font-bold mb-2">My Transactions</h1>
+                <p class="text-xl mb-6">My Balance: <span class="font-bold">⟡ <span id="trans-bal">6,142</span></span></p>
+                <div class="bg-[#232527] p-6 rounded-lg border border-gray-700">
+                    <h2 class="text-lg font-bold border-b border-gray-700 pb-2 mb-4">Summary</h2>
+                    <div class="space-y-4 text-sm">
+                        <div class="flex justify-between"><span>Incoming Robux</span> <span>Amount</span></div>
+                        <div class="flex justify-between text-gray-400 italic"><span>Currency Purchases</span> <span id="purchase-log">⟡ 0</span></div>
+                        <div class="flex justify-between text-gray-400 italic"><span>Sales of Goods</span> <span>⟡ 0</span></div>
+                        <hr class="border-gray-700">
+                        <div class="flex justify-between font-bold"><span>Total</span> <span id="total-in">⟡ 0</span></div>
+                    </div>
+                </div>
+            </div>
+
         </main>
     </div>
 
     <script>
-        let robux = 0;
-        let inventory = [];
+        let balance = 6142;
+        let purchases = 0;
 
-        function injectFunds() {
-            robux += 50000;
-            update();
-            log("FUNDS INJECTED: +50,000 R$");
+        function toggleSidebar() {
+            const sb = document.getElementById('sidebar');
+            sb.classList.toggle('hidden');
         }
 
-        function buy(name, price, avatarType) {
-            if (robux >= price) {
-                robux -= price;
-                inventory.push(name);
-                update();
-                log("PURCHASE SUCCESS: " + name + " for " + price + " R$");
-                changeAvatar(avatarType);
+        function showPage(page) {
+            document.getElementById('view-market').classList.add('hidden');
+            document.getElementById('view-transactions').classList.add('hidden');
+            if(page === 'market') document.getElementById('view-market').classList.remove('hidden');
+            if(page === 'transactions') document.getElementById('view-transactions').classList.remove('hidden');
+        }
+
+        function addRobux() {
+            balance += 10000;
+            purchases += 10000;
+            updateUI();
+        }
+
+        function buyItem(name, price) {
+            if (balance >= price) {
+                balance -= price;
+                updateUI();
+                alert("Successfully purchased " + name + "!");
             } else {
-                alert("ACCESS DENIED: Insufficient Data-Credits!");
+                alert("Insufficient Robux! Please click 'Get Robux' in the sidebar.");
             }
         }
 
-        function update() {
-            document.getElementById('balance').innerText = robux.toLocaleString();
-        }
-
-        function log(msg) {
-            const l = document.getElementById('logs');
-            l.innerHTML = `<div>[${new Date().toLocaleTimeString()}] ${msg}</div>` + l.innerHTML;
-        }
-
-        function changeAvatar(type) {
-            const main = document.getElementById('main-avatar');
-            const nav = document.getElementById('nav-avatar');
-            const models = {
-                classic: "https://tr.rbxcdn.com/30DAY-Avatar-Png",
-                knight: "https://tr.rbxcdn.com/6c0599a09890656a85f8f83060c29f64/150/150/Avatar/Png",
-                ninja: "https://tr.rbxcdn.com/f83e0ec08d13a6964952da8d50b73c41/150/150/Avatar/Png",
-                rich: "https://tr.rbxcdn.com/26798e3b1c5520a23223011409f5e3e7/150/150/Avatar/Png"
-            };
-            main.src = models[type];
-            nav.src = models[type];
-            log("AVATAR RECONSTRUCTED: " + type.toUpperCase());
+        function updateUI() {
+            document.getElementById('robux-balance').innerText = balance.toLocaleString();
+            document.getElementById('trans-bal').innerText = balance.toLocaleString();
+            document.getElementById('purchase-log').innerText = "⟡ " + purchases.toLocaleString();
+            document.getElementById('total-in').innerText = "⟡ " + purchases.toLocaleString();
         }
     </script>
 </body>
